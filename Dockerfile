@@ -19,14 +19,14 @@ RUN cd /usr/src/libtorrent-git && \
     ./autotool.sh && \
     ./configure --disable-debug --enable-encryption --with-boost=/app --prefix=/app CXXFLAGS="-std=c++14" && \
     make clean && \
-    make -j 3 && \
+    make && \
     make install 
 RUN apk add --no-cache qt5-qttools-dev
 RUN cp -R /app/lib/* /usr/local/lib/
 RUN cd /usr/src/qbittorrent-git && \
     ./configure --disable-gui --with-boost=/app --prefix=/app CXXFLAGS="-std=c++14" libtorrent_CFLAGS="-I/app/include" && \
     make clean && \
-    make -j 3 && \
+    make && \
     make install
 
 FROM alpine:3.11
@@ -36,5 +36,5 @@ WORKDIR /app
 COPY --from=0 /app/lib /usr/local/lib/
 COPY --from=0 /app/bin /usr/local/bin/
 COPY --from=0 /app/share /usr/local/share/
-RUN apk add qt5-qtbase
+RUN apk add --no-cache qt5-qtbase
 CMD /usr/local/bin/qbittorrent-nox --webui-port=$WEBUI_PORT
